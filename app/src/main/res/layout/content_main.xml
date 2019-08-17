@@ -175,7 +175,7 @@
                 android:textSize="22dp"
                 android:textColor="#fff"
                 android:layout_gravity="center"
-                android:text="precio" />
+                android:text="$ 0" />
         </LinearLayout>
 
         <LinearLayout
@@ -204,7 +204,7 @@
                 android:textSize="22dp"
                 android:textColor="#fff"
                 android:layout_gravity="center"
-                android:text="existencia" />
+                android:text="0" />
         </LinearLayout>
 
 

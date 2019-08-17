@@ -290,7 +290,7 @@ public class MainActivity extends AppCompatActivity
                 tv_codigo.setText(codigoArt);
                 tv_desc.setText(descripcion);
                 tv_alm.setText(idalmacen+" - "+nomAlmacen);
-                tv_pv.setText(precio);
+                tv_pv.setText("$ "+precio);
                 tv_exi.setText(existencia);
                 Float exi=Float.parseFloat(existencia);
                 if(exi>0)
@@ -316,7 +316,7 @@ public class MainActivity extends AppCompatActivity
                 tv_codigo.setText("");
                 tv_desc.setText("");
                 tv_alm.setText(idalmacen+" - "+nomAlmacen);
-                tv_pv.setText("0");
+                tv_pv.setText("$ 0");
                 tv_exi.setText("0");
                 et_codigo.setText("");
             }

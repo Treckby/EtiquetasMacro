@@ -1,8 +1,10 @@
 package com.example.arisoft.etiquetasmacro;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -10,6 +12,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -23,11 +27,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.arisoft.etiquetasmacro.Tools.Database;
+import com.google.zxing.Result;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -41,13 +47,17 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+import me.dm7.barcodescanner.zxing.ZXingScannerView;
+
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ZXingScannerView.ResultHandler {
     Context contexto=this;
     TextView tv_emp,tv_usu,tv_codigo,tv_desc,tv_alm,tv_pv,tv_exi;
     EditText et_codigo;
     LinearLayout ll_exi;
-    private String URL,idalmacen,descripcion,nomAlmacen,precio,existencia,codigoArt;
+    ImageView iv_codbar;
+    private String URL,idalmacen,descripcion,nomAlmacen,precio,existencia,codigoArt,codigoBarra;
+    private ZXingScannerView escaner;
 
 
     @Override
@@ -95,6 +105,8 @@ public class MainActivity extends AppCompatActivity
 
         et_codigo=(EditText)findViewById(R.id.et_codigo);
 
+        iv_codbar=(ImageView)findViewById(R.id.iv_codbar);
+
         et_codigo.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
@@ -111,16 +123,44 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        iv_codbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               // mensajes("abrir camara");
+                //abrirCamara();
+
+            }
+        });
+        checkCameraPermission();
+       // mensajes("onCreate");
+    }
+
+    private void checkCameraPermission() {
+        int permissionCheck = ContextCompat.checkSelfPermission(
+                this, Manifest.permission.CAMERA);
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            Log.i("Mensaje", "No se tiene permiso para la camara!.");
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 225);
+        } else {
+            Log.i("Mensaje", "Tienes permiso para usar la camara.");
+        }
+    }
+    public void abrirCamara()
+    {
+        escaner=new ZXingScannerView(contexto);
+        setContentView(escaner);
+        escaner.setResultHandler(this); // Register ourselves as a handler for scan results.
+        escaner.startCamera();          // Start camera on resume
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
+            DrawerLayout drawer = findViewById(R.id.drawer_layout);
+            if (drawer.isDrawerOpen(GravityCompat.START)) {
+                drawer.closeDrawer(GravityCompat.START);
+            } else {
+                super.onBackPressed();
+            }
     }
 
     @Override
@@ -201,6 +241,22 @@ public class MainActivity extends AppCompatActivity
     }
     public void mensajes(String mensaje) {
         Toast.makeText(getApplicationContext(),mensaje,Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void handleResult(Result rawResult) {
+
+
+        escaner.resumeCameraPreview((ZXingScannerView.ResultHandler) contexto);
+        //mensajes(rawResult.getText());
+        Log.v("camara", rawResult.getText()); // Prints scan results
+        Log.v("camara", rawResult.getBarcodeFormat().toString()); // Prints the scan format (qrcode, pdf417 etc.)
+        //codigoBarra=rawResult.getText();
+        setContentView(R.layout.activity_main);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        FloatingActionButton fab = findViewById(R.id.fab);
+        escaner.stopCamera();
     }
 
     class cargarArticuloWS extends AsyncTask<String,Integer,String>
@@ -324,5 +380,6 @@ public class MainActivity extends AppCompatActivity
             super.onPostExecute(s);
         }
     }
+
 
 }

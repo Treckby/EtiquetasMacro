@@ -79,9 +79,12 @@ public class LoginActivity extends AppCompatActivity {
                     {
                         mensajes("contraseña en blanco");
                     }
+                    else {
+                        new cargarUsuariosWS().execute(et_usuario.getText().toString(),et_contra.getText().toString());
+                    }
                 }
 
-                new cargarUsuariosWS().execute(et_usuario.getText().toString(),et_contra.getText().toString());
+
             }
         });
     }

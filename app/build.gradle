@@ -31,4 +31,5 @@ dependencies {
     implementation 'org.apache:apache:21'
     implementation files(' useLibrary \'org.apache.http.legacy\'')
     implementation 'org.jbundle.util.osgi.wrapped:org.jbundle.util.osgi.wrapped.org.apache.http.client:4.1.2'
+    implementation 'me.dm7.barcodescanner:zxing:1.9.13'
 }

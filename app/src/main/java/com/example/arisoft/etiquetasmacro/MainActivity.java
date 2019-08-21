@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -56,7 +57,8 @@ public class MainActivity extends AppCompatActivity
     EditText et_codigo;
     LinearLayout ll_exi;
     ImageView iv_codbar;
-    private String URL,idalmacen,descripcion,nomAlmacen,precio,existencia,codigoArt,codigoBarra;
+    private String URL,idalmacen,descripcion,nomAlmacen,precio,existencia,codigoArt,codigobarra,usu,emp;
+    int impuesto;
     private ZXingScannerView escaner;
 
 
@@ -84,10 +86,20 @@ public class MainActivity extends AppCompatActivity
 
         View header = ((NavigationView)findViewById(R.id.nav_view)).getHeaderView(0);
 
-        String emp = getIntent().getStringExtra("empresa");
-        String usu = getIntent().getStringExtra("usuario");
+        emp = getIntent().getStringExtra("empresa");
+        usu = getIntent().getStringExtra("usuario");
+
+        codigobarra="";
+        codigobarra=getIntent().getStringExtra("barcode");
+
+        //mensajes(codigobarra);
+
+
+
         idalmacen=getIntent().getStringExtra("almacen");
-        //mensajes(idalmacen);
+        Log.i("barcode",""+codigobarra+" "+emp+" "+usu+" "+idalmacen);
+        //
+        // mensajes(idalmacen);
 
         tv_emp=(TextView)header.findViewById(R.id.tv_emp);
         tv_usu=(TextView)header.findViewById(R.id.tv_usu);
@@ -106,6 +118,21 @@ public class MainActivity extends AppCompatActivity
         et_codigo=(EditText)findViewById(R.id.et_codigo);
 
         iv_codbar=(ImageView)findViewById(R.id.iv_codbar);
+        et_codigo.setText(codigobarra);
+        String valorCod=et_codigo.getText().toString();
+        if(valorCod.equalsIgnoreCase(""))
+        {
+            //mensajes("codigo en blanco");
+        }
+        else
+        {
+            //mensajes("codigo con datos");
+            new cargarArticuloWS().execute(et_codigo.getText().toString().trim());
+            valorCod="";
+            codigobarra="";
+        }
+
+
 
         et_codigo.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -128,11 +155,25 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                // mensajes("abrir camara");
                 //abrirCamara();
+                Log.i("barcodeonclic",""+codigobarra+" "+emp+" "+usu+" "+idalmacen);
+                Intent i=new Intent(contexto,barcode.class);
+                i.putExtra("usuario",usu );
+                i.putExtra("empresa",emp );
+                i.putExtra("almacen",idalmacen );
+                startActivity(i);
+                finish();
 
             }
         });
         checkCameraPermission();
-       // mensajes("onCreate");
+
+    }
+    public void imprimirEtiqueta(View view)
+    {
+        mensajes("click");
+        Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        v.vibrate(3000);
+
     }
 
     private void checkCameraPermission() {
@@ -143,6 +184,14 @@ public class MainActivity extends AppCompatActivity
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 225);
         } else {
             Log.i("Mensaje", "Tienes permiso para usar la camara.");
+        }
+        int permissionCheckInternet = ContextCompat.checkSelfPermission(
+                this, Manifest.permission.INTERNET);
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            Log.i("Mensaje", "No se tiene permiso para la conexion a internet!.");
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET}, 225);
+        } else {
+            Log.i("Mensaje", "Tienes permiso para la conexion a internet.");
         }
     }
     public void abrirCamara()
@@ -316,7 +365,17 @@ public class MainActivity extends AppCompatActivity
                         precio=objeto.getString("precio");
                         nomAlmacen=objeto.getString("almacen");
                         existencia=objeto.getString("existenciaActual");
-                        Log.i("cargararticulo",""+codigo+" "+descripcion+" "+codigoArt+""+precio+" "+nomAlmacen+" "+existencia+" "+idalmacen);
+                        impuesto=objeto.getInt("impuesto");
+                        if(impuesto==2)
+                        {
+                            calcularImpuesto(precio,impuesto);
+                        }
+                        else if(impuesto==3)
+                        {
+                            calcularImpuesto(precio,impuesto);
+                        }
+                        Log.i("cargararticulo",""+codigo+" "+descripcion+" "+codigoArt+""+precio+" "+nomAlmacen+" "+existencia+" "+idalmacen+" "+impuesto);
+
 
                     } catch (JSONException e) {
                         Log.e("cargararticulo",e.getMessage());
@@ -379,6 +438,24 @@ public class MainActivity extends AppCompatActivity
             progreso.dismiss();
             super.onPostExecute(s);
         }
+    }
+    public void calcularImpuesto(String precioVen,Integer imp)
+    {
+        double auxPrecio=Double.parseDouble(precioVen);
+        if(imp==2)
+        {
+            auxPrecio=auxPrecio*1.11;
+            precio=""+auxPrecio;
+        }
+        else if(imp==3)
+        {
+
+
+            auxPrecio=auxPrecio*1.16;
+            precio=""+auxPrecio;
+        }
+
+
     }
 
 

@@ -445,17 +445,24 @@ public class MainActivity extends AppCompatActivity
         if(imp==2)
         {
             auxPrecio=auxPrecio*1.11;
-            precio=""+auxPrecio;
+            precio=""+formatearDecimales(auxPrecio,2);
+
+            //precio=""+auxPrecio;
         }
         else if(imp==3)
         {
 
 
             auxPrecio=auxPrecio*1.16;
-            precio=""+auxPrecio;
+            precio=""+formatearDecimales(auxPrecio,2);
+            //precio=""+auxPrecio;
         }
 
 
+    }
+
+    public static Double formatearDecimales(Double numero, Integer numeroDecimales) {
+        return Math.round(numero * Math.pow(10, numeroDecimales)) / Math.pow(10, numeroDecimales);
     }
 
 

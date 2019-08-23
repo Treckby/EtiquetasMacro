@@ -35,17 +35,34 @@ public class barcode extends AppCompatActivity  implements ZXingScannerView.Resu
         //mScannerView = new ZXingScannerView(this);   // Programmatically initialize the scanner view
         mScannerView=(ZXingScannerView)findViewById(R.id.zxscan);
         //setContentView(mScannerView);                // Set the scanner view as the content view
+
+
+    }
+    @Override
+    public void onBackPressed(){
+        //do your stuff }
+
+        mScannerView.stopCamera();
+        Intent i=new Intent(contexto,MainActivity.class);
+        i.putExtra("usuario",usu );
+        i.putExtra("empresa",emp );
+        i.putExtra("almacen",idalmacen );
+        startActivity(i);
+        finish();
+        super.onBackPressed();
     }
     @Override
     public void onResume() {
-        super.onResume();
+
         mScannerView.setResultHandler(this); // Register ourselves as a handler for scan results.
         mScannerView.startCamera();          // Start camera on resume
+        super.onResume();
     }
     @Override
     public void onPause() {
         super.onPause();
         mScannerView.stopCamera();// Stop camera on pause
+
     }
 
     @Override
@@ -65,6 +82,7 @@ public class barcode extends AppCompatActivity  implements ZXingScannerView.Resu
         i.putExtra("almacen",idalmacen );
         startActivity(i);
         finish();
+        mScannerView.stopCamera();
 
     }
     public void flash(View v)
@@ -81,6 +99,8 @@ public class barcode extends AppCompatActivity  implements ZXingScannerView.Resu
         }
         */
     }
+
+
 
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {

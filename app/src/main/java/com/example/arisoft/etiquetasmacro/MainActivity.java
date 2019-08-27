@@ -53,11 +53,11 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ZXingScannerView.ResultHandler {
     Context contexto=this;
-    TextView tv_emp,tv_usu,tv_codigo,tv_desc,tv_alm,tv_pv,tv_exi;
+    TextView tv_emp,tv_usu,tv_codigo,tv_desc,tv_alm,tv_pv,tv_exi,tv_uv;
     EditText et_codigo;
     LinearLayout ll_exi;
     ImageView iv_codbar;
-    private String URL,idalmacen,descripcion,nomAlmacen,precio,existencia,codigoArt,codigobarra,usu,emp;
+    private String URL,idalmacen,descripcion,nomAlmacen,precio,existencia,codigoArt,codigobarra,usu,emp,uventa;
     int impuesto;
     private ZXingScannerView escaner;
 
@@ -118,6 +118,9 @@ public class MainActivity extends AppCompatActivity
         et_codigo=(EditText)findViewById(R.id.et_codigo);
 
         iv_codbar=(ImageView)findViewById(R.id.iv_codbar);
+        tv_uv=(TextView)findViewById(R.id.tv_uv);
+
+
         et_codigo.setText(codigobarra);
         String valorCod=et_codigo.getText().toString();
         if(valorCod.equalsIgnoreCase(""))
@@ -171,9 +174,6 @@ public class MainActivity extends AppCompatActivity
     public void imprimirEtiqueta(View view)
     {
         mensajes("click");
-        Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-        v.vibrate(3000);
-
     }
 
     private void checkCameraPermission() {
@@ -366,6 +366,7 @@ public class MainActivity extends AppCompatActivity
                         nomAlmacen=objeto.getString("almacen");
                         existencia=objeto.getString("existenciaActual");
                         impuesto=objeto.getInt("impuesto");
+                        uventa=objeto.getString("unidadVenta");
                         if(impuesto==2)
                         {
                             calcularImpuesto(precio,impuesto);
@@ -407,6 +408,7 @@ public class MainActivity extends AppCompatActivity
                 tv_alm.setText(idalmacen+" - "+nomAlmacen);
                 tv_pv.setText("$ "+precio);
                 tv_exi.setText(existencia);
+                tv_uv.setText(uventa);
                 Float exi=Float.parseFloat(existencia);
                 if(exi>0)
                 {

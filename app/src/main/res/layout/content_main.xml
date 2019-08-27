@@ -156,12 +156,18 @@
                         android:textColor="#fff"
                         android:textSize="22dp" />
                 </LinearLayout>
-
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="16dp"
+                android:layout_weight="1"
+                android:weightSum="2"
+                android:orientation="horizontal">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="16dp"
                     android:layout_weight="1"
+                    android:layout_marginRight="8dp"
                     android:background="@drawable/boton_redondeado"
                     android:orientation="vertical">
 
@@ -172,7 +178,7 @@
                         android:gravity="center"
                         android:text="PRECIO DE VENTA:"
                         android:textColor="#fff"
-                        android:textSize="24dp"
+                        android:textSize="18dp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -183,8 +189,40 @@
                         android:gravity="center"
                         android:text="$ 0"
                         android:textColor="#fff"
-                        android:textSize="22dp" />
+                        android:textSize="16dp" />
                 </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="8dp"
+                    android:background="@drawable/boton_redondeado"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="UNIDAD DE VENTA:"
+                        android:textColor="#fff"
+                        android:textSize="18dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_uv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="PZA"
+                        android:textColor="#fff"
+                        android:textSize="16dp" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+
 
                 <LinearLayout
                     android:id="@+id/ll_exi"
